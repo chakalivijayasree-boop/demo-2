@@ -519,12 +519,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             cartTotalElement.textContent = `$${total.toFixed(2)}`;
         }
 
-        // Process payment
+      // Process payment
         function processPayment(e) {
             e.preventDefault();
             alert('Payment processed successfully! Thank you for your order.');
             cart = [];
-            showPage('home');
+            // Redirect to the specified URL
+            window.location.href = 'https://vijayasreechakali-netizen.github.io/shop/';
         }
 
         // Initialize products on page load
