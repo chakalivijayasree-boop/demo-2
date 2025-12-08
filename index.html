@@ -423,6 +423,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="about-image">📦</div>
             </div>
+            
+            <!-- Contact Form Section -->
+            <div style="margin-top: 4rem;">
+                <div class="payment-form">
+                    <h2>Get In Touch</h2>
+                    <p style="color: #666; margin-bottom: 2rem;">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+                    
+                    <form id="contact-form" onsubmit="processContactForm(event)">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="contact-name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" id="contact-email" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="contact-phone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject *</label>
+                            <input type="text" id="contact-subject" required placeholder="How can we help you?">
+                        </div>
+                        <div class="form-group">
+                            <label>Message *</label>
+                            <textarea id="contact-message" required placeholder="Tell us more about your inquiry..." style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; font-family: inherit; min-height: 120px; resize: vertical;"></textarea>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%; background: #667eea; color: white;">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -489,10 +523,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="container">
             <div class="thankyou-container">
                 <div class="thankyou-icon">✅</div>
-                <h1>Thank You!</h1>
-                <p>Your order has been successfully placed.</p>
+                <h1 id="thankyou-title">Thank You!</h1>
+                <p id="thankyou-message">Your order has been successfully placed.</p>
                 
-                <div class="order-details">
+                <div class="order-details" id="order-details-section">
                     <h3>Order Details</h3>
                     <div class="cart-item">
                         <span>Order Number:</span>
@@ -508,9 +542,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </div>
                     <div id="order-items" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;"></div>
                 </div>
+
+                <div class="order-details" id="contact-details-section" style="display: none;">
+                    <h3>Your Message Details</h3>
+                    <div class="cart-item">
+                        <span>Reference Number:</span>
+                        <span id="contact-reference"></span>
+                    </div>
+                    <div class="cart-item">
+                        <span>Name:</span>
+                        <span id="contact-name-display"></span>
+                    </div>
+                    <div class="cart-item">
+                        <span>Email:</span>
+                        <span id="contact-email-display"></span>
+                    </div>
+                    <div class="cart-item">
+                        <span>Subject:</span>
+                        <span id="contact-subject-display"></span>
+                    </div>
+                </div>
                 
-                <p>A confirmation email has been sent to your email address.</p>
-                <p>We'll notify you when your order ships!</p>
+                <p id="thankyou-subtext">A confirmation email has been sent to your email address.</p>
+                <p id="thankyou-additional">We'll notify you when your order ships!</p>
                 
                 <button class="btn" onclick="showPage('home')" style="background: #667eea; color: white; margin-top: 1rem;">
                     Continue Shopping
@@ -637,21 +691,64 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 total: total
             };
             
-            // Update thank you page
+            // Update thank you page for order
+            document.getElementById('thankyou-title').textContent = 'Thank You!';
+            document.getElementById('thankyou-message').textContent = 'Your order has been successfully placed.';
+            document.getElementById('thankyou-subtext').textContent = 'A confirmation email has been sent to your email address.';
+            document.getElementById('thankyou-additional').textContent = "We'll notify you when your order ships!";
+            
+            document.getElementById('order-details-section').style.display = 'block';
+            document.getElementById('contact-details-section').style.display = 'none';
+            
             document.getElementById('order-number').textContent = orderNumber;
             document.getElementById('customer-info').textContent = name;
-            document.getElementById('order-total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('order-total').textContent = `${total.toFixed(2)}`;
             
             const orderItemsContainer = document.getElementById('order-items');
             orderItemsContainer.innerHTML = '<strong>Items:</strong>' + cart.map(item => `
                 <div class="cart-item" style="margin-top: 0.5rem;">
                     <span>${item.icon} ${item.name}</span>
-                    <span>$${item.price}</span>
+                    <span>${item.price}</span>
                 </div>
             `).join('');
             
             // Clear cart
             cart = [];
+            
+            // Show thank you page
+            showPage('thankyou');
+        }
+
+        // Process contact form
+        function processContactForm(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const phone = document.getElementById('contact-phone').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+            
+            // Generate reference number
+            const referenceNumber = 'MSG-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            
+            // Update thank you page for contact form
+            document.getElementById('thankyou-title').textContent = 'Message Sent!';
+            document.getElementById('thankyou-message').textContent = 'Thank you for contacting us.';
+            document.getElementById('thankyou-subtext').textContent = 'We have received your message and will get back to you within 24-48 hours.';
+            document.getElementById('thankyou-additional').textContent = 'A confirmation has been sent to your email address.';
+            
+            document.getElementById('order-details-section').style.display = 'none';
+            document.getElementById('contact-details-section').style.display = 'block';
+            
+            document.getElementById('contact-reference').textContent = referenceNumber;
+            document.getElementById('contact-name-display').textContent = name;
+            document.getElementById('contact-email-display').textContent = email;
+            document.getElementById('contact-subject-display').textContent = subject;
+            
+            // Reset form
+            document.getElementById('contact-form').reset();
             
             // Show thank you page
             showPage('thankyou');
